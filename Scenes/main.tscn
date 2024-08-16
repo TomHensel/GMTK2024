@@ -1,0 +1,98 @@
+[gd_scene load_steps=9 format=3 uid="uid://b65wu7mtb3pnn"]
+
+[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_ar13k"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_weelw"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vwkpk"]
+
+[sub_resource type="Sky" id="Sky_5saps"]
+sky_material = SubResource("ProceduralSkyMaterial_vwkpk")
+
+[sub_resource type="Environment" id="Environment_x7gs0"]
+background_mode = 2
+sky = SubResource("Sky_5saps")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a7dws"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_3romm"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iy3hr"]
+
+[node name="Main" type="Node3D"]
+
+[node name="TestMeshes" type="Node3D" parent="."]
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 20, 0, 0)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -4, 0, 12)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -10, 8, 1)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 8, 8, -20)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -14, 8, -37)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 21, 8, -32)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 22, 8, -11)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 12, -12.6379, 20)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="TestMeshes"]
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -29, 2.85943, 29)
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_x7gs0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.392578, 0.919719, 0, -0.919719, 0.392578, 0, 0, 0)
+
+[node name="BlackHoleNode" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlackHoleNode"]
+material_override = SubResource("StandardMaterial3D_a7dws")
+mesh = SubResource("SphereMesh_3romm")
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20.2798, 23.8492)
+
+[node name="Player" type="CharacterBody3D" parent="Player"]
+script = ExtResource("1_ar13k")
+mouseSpeed = 0.3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Player"]
+shape = SubResource("SphereShape3D_iy3hr")
+
+[node name="CamPivot" type="Node3D" parent="Player/Player"]
+
+[node name="Camera3D" type="Camera3D" parent="Player/Player/CamPivot"]
+fov = 70.0
