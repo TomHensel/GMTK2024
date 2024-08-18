@@ -33,7 +33,7 @@ dof_blur_amount = 0.03
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y3gxw"]
 render_priority = 0
 shader = ExtResource("3_uxbbg")
-shader_parameter/spehereRadius = 2.495
+shader_parameter/spehereRadius = 1.815
 
 [sub_resource type="SphereMesh" id="SphereMesh_3romm"]
 
@@ -103,7 +103,7 @@ camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
 script = ExtResource("1_e782f")
 
 [node name="BlackHoleMesh" type="MeshInstance3D" parent="BlackHoleNode"]
-transform = Transform3D(6.765, 0, 0, 0, 6.765, 0, 0, 0, 6.765, 0, 2.99365, 0)
+transform = Transform3D(6.765, 0, 0, 0, 6.765, 0, 0, 0, 6.765, 0, 15.2562, 0)
 material_override = SubResource("ShaderMaterial_y3gxw")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_3romm")

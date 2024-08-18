@@ -4,7 +4,7 @@
 code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable.mono's StandardMaterial3D.
 
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, diffuse_burley, specular_disabled, shadows_disabled, unshaded, cull_disabled;//, unshaded, shadows_disabled;
+render_mode blend_mix, depth_draw_opaque, diffuse_burley, specular_disabled, shadows_disabled, unshaded, cull_front;//, unshaded, shadows_disabled;
 
 uniform sampler2D Screen_Texture : hint_screen_texture,filter_nearest,repeat_disable;
 
@@ -63,17 +63,21 @@ void fragment() {
 	
 	Raycast(CAMERA_POSITION_WORLD,view_dir,NODE_POSITION_WORLD,spehereRadius,Hit,HitPostion,HitNormal);
 	
+	float aspecRatio = VIEWPORT_SIZE.y / VIEWPORT_SIZE.x;
+
 	
 	vec2 nodePosView = (PROJECTION_MATRIX * vec4(NODE_POSITION_VIEW,1.0)).xy;
-	vec2 directionToNodePos = normalize(nodePosView - SCREEN_UV);
+	nodePosView = vec2(nodePosView.x, nodePosView.y * aspecRatio);
+	screenPos = vec2(screenPos.x, screenPos.y * aspecRatio);
+	vec2 directionToNodePos = normalize(nodePosView - screenPos);
 	
-	//vec2 dirNodPosAspectRation = vec2(directionToNodePos.x, directionToNodePos.y  * 0.5625);
-	//vec2 screenUVAspect = vec2(SCREEN_UV.x, SCREEN_UV.y * 0.5625);
 	
 	float NdotV = pow(clamp(dot(VIEW, NORMAL),0.0,1.0),5.0);
+	//float NdotV = acos(clamp(dot(VIEW, NORMAL),0.0,1.0));
 	
-	//vec2 used_UV = screenUVAspect + dirNodPosAspectRation * 0.2 * NdotV;
-	vec2 used_UV = SCREEN_UV + directionToNodePos * NdotV *0.2;
+	
+	
+	vec2 used_UV = SCREEN_UV + directionToNodePos * NdotV *0.3;
 	
 	vec3 screenColor = texture(Screen_Texture,used_UV).xyz;// + vec3(0.005,0.0,0.0);
 	
