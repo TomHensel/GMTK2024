@@ -1,23 +1,39 @@
-[gd_scene load_steps=11 format=3 uid="uid://b65wu7mtb3pnn"]
+[gd_scene load_steps=15 format=3 uid="uid://b65wu7mtb3pnn"]
 
+[ext_resource type="Texture2D" uid="uid://ddyoc8y534365" path="res://Textures/panorama_image(3).png" id="1_5e462"]
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_ar13k"]
 [ext_resource type="Script" path="res://Scripts/BlackHoleNode.cs" id="1_e782f"]
 [ext_resource type="Script" path="res://Scripts/UiManager.cs" id="3_utfhk"]
+[ext_resource type="Shader" uid="uid://cgi4i72u5h84u" path="res://Shader/BlackHoleShader.tres" id="3_uxbbg"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_weelw"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vwkpk"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli0x"]
+albedo_color = Color(1, 0.758126, 0.457581, 1)
+emission_enabled = true
+emission = Color(0.998256, 0.729806, 0.467903, 1)
+disable_receive_shadows = true
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_uclci"]
+panorama = ExtResource("1_5e462")
 
 [sub_resource type="Sky" id="Sky_5saps"]
-sky_material = SubResource("ProceduralSkyMaterial_vwkpk")
+sky_material = SubResource("PanoramaSkyMaterial_uclci")
 
 [sub_resource type="Environment" id="Environment_x7gs0"]
 background_mode = 2
 sky = SubResource("Sky_5saps")
+glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a7dws"]
-shading_mode = 0
-albedo_color = Color(0, 0, 0, 1)
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g1wa3"]
+dof_blur_far_distance = 3072.0
+dof_blur_far_transition = 10.0
+dof_blur_amount = 0.03
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y3gxw"]
+render_priority = 0
+shader = ExtResource("3_uxbbg")
+shader_parameter/spehereRadius = 2.495
 
 [sub_resource type="SphereMesh" id="SphereMesh_3romm"]
 
@@ -33,14 +49,21 @@ mesh = SubResource("SphereMesh_weelw")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -4, 0, 12)
+transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -0.551877, 0, 9.97612)
 mesh = SubResource("SphereMesh_weelw")
 skeleton = NodePath("../..")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="TestMeshes"]
 transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -10, 8, 1)
+material_override = SubResource("StandardMaterial3D_cli0x")
 mesh = SubResource("SphereMesh_weelw")
 skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="TestMeshes/MeshInstance3D4"]
+light_color = Color(1, 0.748778, 0.387569, 1)
+light_energy = 11.21
+light_indirect_energy = 7.4
+omni_range = 44.7346
 
 [node name="MeshInstance3D5" type="MeshInstance3D" parent="TestMeshes"]
 transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 8, 8, -20)
@@ -74,23 +97,27 @@ skeleton = NodePath("../..")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_x7gs0")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(1, 0, 0, 0, 0.392578, 0.919719, 0, -0.919719, 0.392578, 0, 0, 0)
+camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
 
 [node name="BlackHoleNode" type="Node3D" parent="."]
 script = ExtResource("1_e782f")
 
 [node name="BlackHoleMesh" type="MeshInstance3D" parent="BlackHoleNode"]
-material_override = SubResource("StandardMaterial3D_a7dws")
+transform = Transform3D(6.765, 0, 0, 0, 6.765, 0, 0, 0, 6.765, 0, 2.99365, 0)
+material_override = SubResource("ShaderMaterial_y3gxw")
+cast_shadow = 0
 mesh = SubResource("SphereMesh_3romm")
 
 [node name="Player" type="Node3D" parent="."]
 
 [node name="Player" type="CharacterBody3D" parent="Player" node_paths=PackedStringArray("blackHole")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0)
 script = ExtResource("1_ar13k")
 blackHole = NodePath("../../BlackHoleNode")
 mouseSpeed = 0.3
+rotationSpeed = 2.5
+steeringSpeed = 0.2
+steeringAccelaration = 2.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/Player"]
 shape = SubResource("SphereShape3D_iy3hr")
@@ -99,6 +126,10 @@ shape = SubResource("SphereShape3D_iy3hr")
 
 [node name="Camera3D" type="Camera3D" parent="Player/Player/CamPivot"]
 fov = 70.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Player/Player/CamPivot"]
+spot_range = 799.772
+spot_angle = 38.8938
 
 [node name="UIManager" type="Control" parent="Player/Player"]
 layout_mode = 3
@@ -125,3 +156,18 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = "E - Feed The Black Hole"
 uppercase = true
+
+[node name="ColorRect" type="ColorRect" parent="Player/Player/UIManager"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(5, 5)

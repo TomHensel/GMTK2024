@@ -1,0 +1,91 @@
+[gd_resource type="Shader" format=3 uid="uid://cgi4i72u5h84u"]
+
+[resource]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable.mono's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, diffuse_burley, specular_disabled, shadows_disabled, unshaded, cull_disabled;//, unshaded, shadows_disabled;
+
+uniform sampler2D Screen_Texture : hint_screen_texture,filter_nearest,repeat_disable;
+
+uniform float spehereRadius = 0.25;
+
+
+//source: https://www.youtube.com/watch?v=hNkPHPhzXVA
+
+void Raycast(vec3 rayOrigin, vec3 rayDirection, vec3 sphereOrigin, float sphereSize,
+	out float Hit, out vec3 HitPosition, out vec3 HitNormal){
+		HitPosition = vec3(0.0);
+		HitNormal = vec3(0.0);
+		
+		float t = 0.0;
+		vec3 L = sphereOrigin - rayOrigin;
+		float tca = dot(L,-rayDirection);
+		
+		if(tca < 0.0){
+			Hit = 0.0;
+			return;
+		}
+		
+		float d2 = dot(L,L) - tca * tca;
+		float radius2 = sphereSize * sphereSize;
+		
+		if(d2 > radius2){
+			Hit = 0.0f;
+			return;
+		}
+		
+		float thc = sqrt(radius2 - d2);
+		t = tca - thc;
+		
+		Hit = 1.0f;
+		
+		HitPosition = rayOrigin - rayDirection * t;
+		HitNormal = normalize(HitPosition - sphereOrigin);
+	}
+
+void vertex() {
+}
+
+void fragment() {
+
+	
+	
+	float Hit;
+	vec3 HitPostion;
+	vec3 HitNormal;
+	
+	vec3 worldPos = (INV_VIEW_MATRIX * vec4(VERTEX,1.0)).xyz;
+	
+	vec2 screenPos = (PROJECTION_MATRIX * vec4(VERTEX,1.0)).xy;
+	
+	vec3 view_dir =normalize(CAMERA_POSITION_WORLD-worldPos);
+	
+	Raycast(CAMERA_POSITION_WORLD,view_dir,NODE_POSITION_WORLD,spehereRadius,Hit,HitPostion,HitNormal);
+	
+	
+	vec2 nodePosView = (PROJECTION_MATRIX * vec4(NODE_POSITION_VIEW,1.0)).xy;
+	vec2 directionToNodePos = normalize(nodePosView - SCREEN_UV);
+	
+	//vec2 dirNodPosAspectRation = vec2(directionToNodePos.x, directionToNodePos.y  * 0.5625);
+	//vec2 screenUVAspect = vec2(SCREEN_UV.x, SCREEN_UV.y * 0.5625);
+	
+	float NdotV = pow(clamp(dot(VIEW, NORMAL),0.0,1.0),5.0);
+	
+	//vec2 used_UV = screenUVAspect + dirNodPosAspectRation * 0.2 * NdotV;
+	vec2 used_UV = SCREEN_UV + directionToNodePos * NdotV *0.2;
+	
+	vec3 screenColor = texture(Screen_Texture,used_UV).xyz;// + vec3(0.005,0.0,0.0);
+	
+	
+	ALBEDO = mix(screenColor, vec3(0.0), Hit);
+	
+	//ALBEDO = vec3();
+	
+	//ALBEDO = vec3(nodePosView,1.0);
+	//ALBEDO = vec3(SCREEN_UV,1.0);
+
+	//ALBEDO = FRAGCOORD.xyz / FRAGCOORD.w;
+	
+}
+"
