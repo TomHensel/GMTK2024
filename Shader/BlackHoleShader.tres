@@ -4,11 +4,15 @@
 code = "// NOTE: Shader automatically converted from Godot Engine 4.3.stable.mono's StandardMaterial3D.
 
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, diffuse_burley, specular_disabled, shadows_disabled, unshaded, cull_front;//, unshaded, shadows_disabled;
+render_mode blend_mix, depth_draw_always, diffuse_burley, specular_disabled, shadows_disabled, unshaded, cull_disabled ;//, unshaded, shadows_disabled;
 
 uniform sampler2D Screen_Texture : hint_screen_texture,filter_nearest,repeat_disable;
 
 uniform float spehereRadius = 0.25;
+uniform float objectScale = 1.0;
+
+uniform vec3 outerColor : source_color = vec3(1.0);
+uniform float outerRingExponent = 5.0;
 
 
 //source: https://www.youtube.com/watch?v=hNkPHPhzXVA
@@ -42,7 +46,15 @@ void Raycast(vec3 rayOrigin, vec3 rayDirection, vec3 sphereOrigin, float sphereS
 		
 		HitPosition = rayOrigin - rayDirection * t;
 		HitNormal = normalize(HitPosition - sphereOrigin);
-	}
+}
+	
+vec2 getScreenPosfromView(vec3 viewPos,mat4 projMat, float aspectRatio){
+	vec4 screen = projMat * vec4(viewPos,1.0);
+	vec2 screenPos = screen.xy / abs(screen.w);
+	//float aspectRatio = viewPortSize.y / viewPortSize.x;
+	return vec2(screenPos.x, screenPos.y * aspectRatio);
+}
+	
 
 void vertex() {
 }
@@ -55,36 +67,45 @@ void fragment() {
 	vec3 HitPostion;
 	vec3 HitNormal;
 	
-	vec3 worldPos = (INV_VIEW_MATRIX * vec4(VERTEX,1.0)).xyz;
-	
-	vec2 screenPos = (PROJECTION_MATRIX * vec4(VERTEX,1.0)).xy;
-	
+	vec3 worldPos = (INV_VIEW_MATRIX * vec4(VERTEX,1.0)).xyz;	
 	vec3 view_dir =normalize(CAMERA_POSITION_WORLD-worldPos);
-	
 	Raycast(CAMERA_POSITION_WORLD,view_dir,NODE_POSITION_WORLD,spehereRadius,Hit,HitPostion,HitNormal);
 	
-	float aspecRatio = VIEWPORT_SIZE.y / VIEWPORT_SIZE.x;
-
 	
-	vec2 nodePosView = (PROJECTION_MATRIX * vec4(NODE_POSITION_VIEW,1.0)).xy;
-	nodePosView = vec2(nodePosView.x, nodePosView.y * aspecRatio);
-	screenPos = vec2(screenPos.x, screenPos.y * aspecRatio);
+	float nDotview = pow(1.0- dot(view_dir,HitNormal),outerRingExponent);
+	vec3 innerColor = mix(vec3(0.0),outerColor,nDotview);
+	
+
+	//vec2 nodePosView = (PROJECTION_MATRIX * vec4(NODE_POSITION_VIEW,1.0)).xy;
+	float aspecRatio = VIEWPORT_SIZE.y / VIEWPORT_SIZE.x;
+	
+	vec2 nodePosView = getScreenPosfromView(NODE_POSITION_VIEW,PROJECTION_MATRIX,aspecRatio);
+	vec2 screenPos = getScreenPosfromView(VERTEX,PROJECTION_MATRIX,aspecRatio);
 	vec2 directionToNodePos = normalize(nodePosView - screenPos);
+
 	
 	
 	float NdotV = pow(clamp(dot(VIEW, NORMAL),0.0,1.0),5.0);
-	//float NdotV = acos(clamp(dot(VIEW, NORMAL),0.0,1.0));
+	//float NdotV = pow(acos(clamp(1.0- dot(VIEW, NORMAL),0.0,1.0)),20.0);
 	
 	
+	//float NodeDist = distance(NODE_POSITION_WORLD, CAMERA_POSITION_WORLD);
+	//vec4 tempScreenP =(PROJECTION_MATRIX * vec4(NODE_POSITION_VIEW,1.0));
+	//float NodeDist = (tempScreenP.z/ tempScreenP.w);
+	//float fovRad = tan(0.523599);
+	//float distortionScaler = (fovRad*NodeDist*2.0)/objectScale;
 	
-	vec2 used_UV = SCREEN_UV + directionToNodePos * NdotV *0.3;
+	vec2 used_UV = SCREEN_UV + directionToNodePos * NdotV * 0.2 ;//*distortionScaler;
 	
 	vec3 screenColor = texture(Screen_Texture,used_UV).xyz;// + vec3(0.005,0.0,0.0);
 	
 	
-	ALBEDO = mix(screenColor, vec3(0.0), Hit);
+	ALBEDO = mix(screenColor, innerColor, Hit);
 	
-	//ALBEDO = vec3();
+	//ALBEDO =vec3(NodeDist);
+	
+	
+	//ALBEDO = vec3(NdotV);
 	
 	//ALBEDO = vec3(nodePosView,1.0);
 	//ALBEDO = vec3(SCREEN_UV,1.0);

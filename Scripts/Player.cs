@@ -47,17 +47,25 @@ public partial class Player : CharacterBody3D
 
 		steeringValue = Mathf.LerpAngle(steeringValue,  Mathf.DegToRad(input_dir.X*steeringSpeed), dTime * steeringAccelaration);
 		
+		float usedSpeed = 20;
+		float usedRotationSpeed = rotationSpeed;
+		if (Input.IsActionPressed("Shift") && input_dir.Y < 0f)
+		{
+			usedSpeed = 200;
+			//usedRotationSpeed = rotationSpeed * 0.25f;
+		}
 		
-		camPivot.Rotate(cam.GlobalBasis.X, -normMousePos.Y*dTime * rotationSpeed);
-		camPivot.Rotate(cam.GlobalTransform.Basis.Y, -normMousePos.X*dTime * rotationSpeed);
+		camPivot.Rotate(cam.GlobalBasis.X, -normMousePos.Y*dTime * usedRotationSpeed);
+		camPivot.Rotate(cam.GlobalTransform.Basis.Y, -normMousePos.X*dTime * usedRotationSpeed);
 		camPivot.Rotate(cam.GlobalTransform.Basis.Z, steeringValue);
 		
 
 		Vector3 direction = cam.GlobalTransform.Basis.Z * input_dir.Y;
-		
+
+				
 
 
-		vel = vel.Lerp(direction * 20, dTime); 
+		vel = vel.Lerp(direction * usedSpeed, dTime); 
 
 				
 		Velocity = vel;

@@ -15,6 +15,7 @@ public partial class BlackHoleNode : Node3D
 		blackHoleMesh = GetNode<MeshInstance3D>("BlackHoleMesh");
 		blackHoleScale = blackHoleMesh.Scale.X;
 		blackHoleMat =  blackHoleMesh.MaterialOverride;
+		blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
 		//blackHoleMat.Set("shader_parameter/spehereRadius",0.5);
 
 	}
@@ -29,7 +30,8 @@ public partial class BlackHoleNode : Node3D
 	{
 		blackHoleScale += amount;
 		GD.Print(blackHoleScale);
-		blackHoleMesh.Scale = new Vector3(blackHoleScale + blackHoleScale/2, blackHoleScale + blackHoleScale/2, blackHoleScale + blackHoleScale/2);
+		blackHoleMesh.Scale = new Vector3(blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale);
 		blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.5);
+        blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
 	}
 }

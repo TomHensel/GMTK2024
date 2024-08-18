@@ -1,18 +1,38 @@
-[gd_scene load_steps=15 format=3 uid="uid://b65wu7mtb3pnn"]
+[gd_scene load_steps=21 format=3 uid="uid://b65wu7mtb3pnn"]
 
 [ext_resource type="Texture2D" uid="uid://ddyoc8y534365" path="res://Textures/panorama_image(3).png" id="1_5e462"]
 [ext_resource type="Script" path="res://Scripts/Player.cs" id="1_ar13k"]
+[ext_resource type="Shader" path="res://Shader/SunOut.gdshader" id="1_c2pmq"]
 [ext_resource type="Script" path="res://Scripts/BlackHoleNode.cs" id="1_e782f"]
+[ext_resource type="Shader" path="res://Shader/Atmoussphere.gdshader" id="1_eb4ib"]
 [ext_resource type="Script" path="res://Scripts/UiManager.cs" id="3_utfhk"]
 [ext_resource type="Shader" uid="uid://cgi4i72u5h84u" path="res://Shader/BlackHoleShader.tres" id="3_uxbbg"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_weelw"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli0x"]
 albedo_color = Color(1, 0.758126, 0.457581, 1)
 emission_enabled = true
-emission = Color(0.998256, 0.729806, 0.467903, 1)
+emission = Color(1, 0.889893, 0.679688, 1)
+emission_energy_multiplier = 1.25
 disable_receive_shadows = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_weelw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s5vic"]
+render_priority = 0
+shader = ExtResource("1_c2pmq")
+shader_parameter/AtmosphereColor = Color(0.859375, 0.545554, 0.211487, 1)
+shader_parameter/emmisionStrength = 30.0
+shader_parameter/fesnelExponent = 10.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_77o0g"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c6seh"]
+normal_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_85h2w"]
+render_priority = 0
+shader = ExtResource("1_eb4ib")
+shader_parameter/AtmosphereColor = Color(0.584335, 0.735009, 0.808594, 1)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_uclci"]
 panorama = ExtResource("1_5e462")
@@ -33,7 +53,10 @@ dof_blur_amount = 0.03
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y3gxw"]
 render_priority = 0
 shader = ExtResource("3_uxbbg")
-shader_parameter/spehereRadius = 1.815
+shader_parameter/spehereRadius = 0.25
+shader_parameter/objectScale = 1.0
+shader_parameter/outerColor = Color(0.386719, 0.0709991, 0.307789, 1)
+shader_parameter/outerRingExponent = 6.16
 
 [sub_resource type="SphereMesh" id="SphereMesh_3romm"]
 
@@ -41,59 +64,37 @@ shader_parameter/spehereRadius = 1.815
 
 [node name="Main" type="Node3D"]
 
-[node name="TestMeshes" type="Node3D" parent="."]
+[node name="SunSystem" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -558.06, 0, 0)
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 20, 0, 0)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -0.551877, 0, 9.97612)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -10, 8, 1)
+[node name="Sun" type="MeshInstance3D" parent="SunSystem"]
+transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_cli0x")
 mesh = SubResource("SphereMesh_weelw")
 skeleton = NodePath("../..")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="TestMeshes/MeshInstance3D4"]
-light_color = Color(1, 0.748778, 0.387569, 1)
-light_energy = 11.21
-light_indirect_energy = 7.4
-omni_range = 44.7346
+[node name="OmniLight3D" type="OmniLight3D" parent="SunSystem/Sun"]
+light_color = Color(1, 0.903858, 0.765625, 1)
+light_energy = 16.0
+omni_range = 2342.78
 
-[node name="MeshInstance3D5" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 8, 8, -20)
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SunSystem/Sun"]
+transform = Transform3D(1.337, 0, 0, 0, 1.337, 0, 0, 0, 1.337, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_s5vic")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="SunSystem"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 288.567, -1.90735e-06, -12.919)
+material_override = SubResource("StandardMaterial3D_c6seh")
 mesh = SubResource("SphereMesh_weelw")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D6" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -14, 8, -37)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D7" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 21, 8, -32)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D8" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 22, 8, -11)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D9" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, 12, -12.6379, 20)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D10" type="MeshInstance3D" parent="TestMeshes"]
-transform = Transform3D(3.41143, 0, 0, 0, 3.41143, 0, 0, 0, 3.41143, -29, 2.85943, 29)
-mesh = SubResource("SphereMesh_weelw")
-skeleton = NodePath("../..")
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SunSystem/MeshInstance3D5"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_85h2w")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_x7gs0")
@@ -103,7 +104,6 @@ camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
 script = ExtResource("1_e782f")
 
 [node name="BlackHoleMesh" type="MeshInstance3D" parent="BlackHoleNode"]
-transform = Transform3D(6.765, 0, 0, 0, 6.765, 0, 0, 0, 6.765, 0, 15.2562, 0)
 material_override = SubResource("ShaderMaterial_y3gxw")
 cast_shadow = 0
 mesh = SubResource("SphereMesh_3romm")
@@ -125,7 +125,7 @@ shape = SubResource("SphereShape3D_iy3hr")
 [node name="CamPivot" type="Node3D" parent="Player/Player"]
 
 [node name="Camera3D" type="Camera3D" parent="Player/Player/CamPivot"]
-fov = 70.0
+fov = 60.0
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Player/Player/CamPivot"]
 spot_range = 799.772
