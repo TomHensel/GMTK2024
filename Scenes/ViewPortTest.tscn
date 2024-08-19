@@ -1,0 +1,412 @@
+[gd_scene load_steps=53 format=4 uid="uid://b412me1dsj22n"]
+
+[ext_resource type="Script" path="res://Scripts/InputShit.cs" id="1_0c0n2"]
+[ext_resource type="Texture2D" uid="uid://bb1hq1f3iu5vo" path="res://Textures/Solarsystemscope_texture_2k_sun.jpg" id="1_rdlc8"]
+[ext_resource type="Shader" path="res://Shader/MainViewPort.gdshader" id="2_b3x12"]
+[ext_resource type="Shader" path="res://Shader/SunOut.gdshader" id="2_xi2wg"]
+[ext_resource type="Texture2D" uid="uid://d21n3ho705akr" path="res://Textures/rock_planet_texture___sphere_by_tbh_1138_d34l2te-fullview.jpg" id="3_a3p0s"]
+[ext_resource type="Texture2D" uid="uid://bdd5nde15llkc" path="res://Textures/rock_planet_texture___sphere_by_tbh_1138_d34l2te-fullviewNormal.jpg" id="4_e0h4y"]
+[ext_resource type="Script" path="res://Scripts/PlanetScript.cs" id="5_fqfwb"]
+[ext_resource type="Shader" path="res://Shader/Atmoussphere.gdshader" id="6_8g4xc"]
+[ext_resource type="Texture2D" uid="uid://boch6co2wbqn5" path="res://Textures/Solarsystemscope_texture_2k_mars.jpg" id="7_bu13l"]
+[ext_resource type="Texture2D" uid="uid://doqulpxqe31f1" path="res://Textures/Solarsystemscope_texture_2k_marsNormal.jpg" id="8_kuo0c"]
+[ext_resource type="Texture2D" uid="uid://i2odaweey3ks" path="res://Textures/Venus.jpg" id="9_7i5lf"]
+[ext_resource type="Texture2D" uid="uid://bgnj5y4uyorju" path="res://Textures/VenusNormal.jpg" id="10_7me8u"]
+[ext_resource type="Texture2D" uid="uid://dmm35p5bx8sat" path="res://Textures/Solarsystemscope_texture_8k_jupiter.jpg" id="11_kena6"]
+[ext_resource type="Texture2D" uid="uid://cg4u3j5yjqt38" path="res://Textures/Solarsystemscope_texture_8k_jupiterNormal.jpg" id="12_kk32y"]
+[ext_resource type="Texture2D" uid="uid://d3s8x6fa26s87" path="res://Textures/Solarsystemscope_texture_8k_saturn.jpg" id="13_dloby"]
+[ext_resource type="Texture2D" uid="uid://swlavflmawml" path="res://Textures/Solarsystemscope_texture_8k_saturnNormal.jpg" id="14_bmi3l"]
+[ext_resource type="Texture2D" uid="uid://ddyoc8y534365" path="res://Textures/panorama_image(3).png" id="15_pfv5f"]
+[ext_resource type="PackedScene" uid="uid://ccayaplqjcekp" path="res://Scenes/BlackHoleScene.tscn" id="16_tmojs"]
+[ext_resource type="AudioStream" uid="uid://3ui0w8rmxevp" path="res://Sounds/Music/That Zen Moment.mp3" id="17_0ho7r"]
+[ext_resource type="Script" path="res://Scripts/BlackHoleNode.cs" id="18_3nh3o"]
+[ext_resource type="Script" path="res://Scripts/Player.cs" id="18_arjy4"]
+[ext_resource type="Shader" uid="uid://cgi4i72u5h84u" path="res://Shader/BlackHoleShader.tres" id="19_2tp5o"]
+[ext_resource type="PackedScene" uid="uid://cuwnxiuyvut30" path="res://Models/SpaceShipsControls.glb" id="19_h66wu"]
+[ext_resource type="Script" path="res://Scripts/UiManager.cs" id="20_gpnn0"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_vu577"]
+viewport_path = NodePath("SubViewport2")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_eyl68"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kcyta"]
+resource_local_to_scene = true
+shader = ExtResource("2_b3x12")
+shader_parameter/mainViewPort = SubResource("ViewportTexture_eyl68")
+shader_parameter/blackHoleViewPort = SubResource("ViewportTexture_vu577")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli0x"]
+albedo_color = Color(1, 0.758126, 0.457581, 1)
+emission_enabled = true
+emission_energy_multiplier = 2.0
+emission_texture = ExtResource("1_rdlc8")
+disable_receive_shadows = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_weelw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s5vic"]
+render_priority = 0
+shader = ExtResource("2_xi2wg")
+shader_parameter/AtmosphereColor = Color(0.859375, 0.545554, 0.211487, 1)
+shader_parameter/emmisionStrength = 30.0
+shader_parameter/fesnelExponent = 10.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_77o0g"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c6seh"]
+albedo_texture = ExtResource("3_a3p0s")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("4_e0h4y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p6jsh"]
+render_priority = 0
+shader = ExtResource("6_8g4xc")
+shader_parameter/AtmosphereColor = Color(0.503906, 0.503906, 0.503906, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x55gb"]
+albedo_texture = ExtResource("7_bu13l")
+normal_enabled = true
+normal_texture = ExtResource("8_kuo0c")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_85h2w"]
+render_priority = 0
+shader = ExtResource("6_8g4xc")
+shader_parameter/AtmosphereColor = Color(0.644531, 0.433084, 0.329819, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7q68p"]
+albedo_texture = ExtResource("9_7i5lf")
+normal_enabled = true
+normal_scale = 0.5
+normal_texture = ExtResource("10_7me8u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ody80"]
+render_priority = 0
+shader = ExtResource("6_8g4xc")
+shader_parameter/AtmosphereColor = Color(0.902344, 0.763858, 0.525192, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vb7ho"]
+albedo_texture = ExtResource("11_kena6")
+normal_enabled = true
+normal_scale = 0.6
+normal_texture = ExtResource("12_kk32y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7825r"]
+render_priority = 0
+shader = ExtResource("6_8g4xc")
+shader_parameter/AtmosphereColor = Color(0.753906, 0.640365, 0.444687, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oukjj"]
+albedo_texture = ExtResource("13_dloby")
+normal_enabled = true
+normal_texture = ExtResource("14_bmi3l")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hix7i"]
+render_priority = 0
+shader = ExtResource("6_8g4xc")
+shader_parameter/AtmosphereColor = Color(0.667969, 0.607609, 0.503586, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j6a6y"]
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lcjt1"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ofbkv"]
+_surfaces = [{
+"aabb": AABB(-1.25, 0, -1.25, 2.5, 1e-05, 2.5),
+"format": 34896613377,
+"index_count": 288,
+"index_data": PackedByteArray("RgBFAEcARgBDAEUAQgBGAEQAPgBCAEAAOgA+ADwANgA6ADgAMgA2ADQALgAyADAAKgAuACwAJgAqACgAIgAmACQAHgAiACAAGgAeABwAHQAaABsAHwAaAB0AGgAiAB4AIgAqACYAKgAyAC4AMgA6ADYAOgBCAD4AQgBDAEYAQgBBAEMAMgBCADoAIgAyACoAHwAiABoAIQAiAB8AMgBBAEIAMgA/AEEAIwAiACEAJQAiACMAMgA9AD8AMgA7AD0AJQAyACIAJwAyACUAMgA5ADsAMgA3ADkAKQAyACcAKwAyACkAMgA1ADcAMgAzADUALQAyACsALwAyAC0AMgAxADMAMQAyAC8AFgAVABcAFgATABUAEgAWABQADgASABAACgAOAAwABgAKAAgAAgAGAAQAXgACAAAAWgBeAFwAVgBaAFgAUgBWAFQATgBSAFAASgBOAEwATQBKAEsATwBKAE0ASgBSAE4AUgBaAFYAWgACAF4AAgAKAAYACgASAA4AEgATABYAEgARABMAAgASAAoAUgACAFoATwBSAEoAUQBSAE8AAgARABIAAgAPABEAUwBSAFEAVQBSAFMAAgANAA8AAgALAA0AVQACAFIAVwACAFUAAgAJAAsAAgAHAAkAWQACAFcAWwACAFkAAgAFAAcAAgADAAUAXQACAFsAXwACAF0AAgABAAMAAQACAF8AFgAaABgAGgAZABsAGQAWABcAGgAWABkARgBKAEgASgBJAEsASQBGAEcASgBGAEkA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 96,
+"vertex_data": PackedByteArray("//8AAP9/AADMzAAA/38AAOb+AABKbwAAI8wAAPl1AACi+wAA3l4AAC7KAAAebAAAQPYAAANPAADzxgAAm2IAANjuAAD/PwAAgcIAAJlZAACL5QAAEzIAAO28AAA+UQAAgdoAAH0lAABNtgAAsUkAAOvNAABzGgAAwK4AABFDAAD/vwAAJhEAAGWmAAB9PQAA+7AAAL4JAABjnQAACzkAACChAABcBAAA4JMAANA1AAC0kAAAGAEAAAWKAADbMwAA/38AAAAAAAD/fwAAMzMAAEpvAAAYAQAA+XUAANszAADeXgAAXAQAAB5sAADQNQAAA08AAL4JAACbYgAACzkAAP8/AAAmEQAAmVkAAH09AAATMgAAcxoAAD5RAAARQwAAfSUAAH0lAACxSQAAsUkAAHMaAAATMgAAEUMAAD5RAAAmEQAA/z8AAH09AACZWQAAvgkAAANPAAALOQAAm2IAAFwEAADeXgAA0DUAAB5sAAAYAQAASm8AANszAAD5dQAAAAAAAP9/AAAzMwAA/38AABgBAAC0kAAA2zMAAAWKAABcBAAAIKEAANA1AADgkwAAvgkAAPuwAAALOQAAY50AACYRAAD/vwAAfT0AAGWmAABzGgAA680AABFDAADArgAAfSUAAIHaAACxSQAATbYAABMyAACL5QAAPlEAAO28AAD/PwAA2O4AAJlZAACBwgAAA08AAED2AACbYgAA88YAAN5eAACi+wAAHmwAAC7KAABKbwAA5v4AAPl1AAAjzAAA/38AAP//AAD/fwAAzMwAALSQAADm/gAABYoAACPMAAAgoQAAovsAAOCTAAAuygAA+7AAAED2AABjnQAA88YAAP+/AADY7gAAZaYAAIHCAADrzQAAi+UAAMCuAADtvAAAgdoAAIHaAABNtgAATbYAAIvlAADrzQAA7bwAAMCuAADY7gAA/78AAIHCAABlpgAAQPYAAPuwAADzxgAAY50AAKL7AAAgoQAALsoAAOCTAADm/gAAtJAAACPMAAAFigAA")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_dketp"]
+resource_name = "PlanetRing_Torus"
+_surfaces = [{
+"aabb": AABB(-1.25, 0, -1.25, 2.5, 1e-05, 2.5),
+"attribute_data": PackedByteArray("AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//"),
+"format": 34896613399,
+"index_count": 288,
+"index_data": PackedByteArray("RgBFAEcARgBDAEUAQgBGAEQAPgBCAEAAOgA+ADwANgA6ADgAMgA2ADQALgAyADAAKgAuACwAJgAqACgAIgAmACQAHgAiACAAGgAeABwAHQAaABsAHwAaAB0AGgAiAB4AIgAqACYAKgAyAC4AMgA6ADYAOgBCAD4AQgBDAEYAQgBBAEMAMgBCADoAIgAyACoAHwAiABoAIQAiAB8AMgBBAEIAMgA/AEEAIwAiACEAJQAiACMAMgA9AD8AMgA7AD0AJQAyACIAJwAyACUAMgA5ADsAMgA3ADkAKQAyACcAKwAyACkAMgA1ADcAMgAzADUALQAyACsALwAyAC0AMgAxADMAMQAyAC8AFgAVABcAFgATABUAEgAWABQADgASABAACgAOAAwABgAKAAgAAgAGAAQAXgACAAAAWgBeAFwAVgBaAFgAUgBWAFQATgBSAFAASgBOAEwATQBKAEsATwBKAE0ASgBSAE4AUgBaAFYAWgACAF4AAgAKAAYACgASAA4AEgATABYAEgARABMAAgASAAoAUgACAFoATwBSAEoAUQBSAE8AAgARABIAAgAPABEAUwBSAFEAVQBSAFMAAgANAA8AAgALAA0AVQACAFIAVwACAFUAAgAJAAsAAgAHAAkAWQACAFcAWwACAFkAAgAFAAcAAgADAAUAXQACAFsAXwACAF0AAgABAAMAAQACAF8AFgAaABgAGgAZABsAGQAWABcAGgAWABkARgBKAEgASgBJAEsASQBGAEcASgBGAEkA"),
+"material": SubResource("StandardMaterial3D_lcjt1"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 96,
+"vertex_data": PackedByteArray("//8AAP9//7/MzAAA/3//v+b+AABKb/+/I8wAAPl1/7+i+wAA3l7/vy7KAAAebP+/QPYAAANP/7/zxgAAm2L/v9juAAD/P/+/gcIAAJlZ/7+L5QAAEzL/v+28AAA+Uf+/gdoAAH0l/79NtgAAsUn/v+vNAABzGv+/wK4AABFD/7//vwAAJhH/v2WmAAB9Pf+/+7AAAL4J/79jnQAACzn/vyChAABcBP+/4JMAANA1/7+0kAAAGAH/vwWKAADbM/+//38AAAAA/7//fwAAMzP/v0pvAAAYAf+/+XUAANsz/7/eXgAAXAT/vx5sAADQNf+/A08AAL4J/7+bYgAACzn/v/8/AAAmEf+/mVkAAH09/78TMgAAcxr/vz5RAAARQ/+/fSUAAH0l/7+xSQAAsUn/v3MaAAATMv+/EUMAAD5R/78mEQAA/z//v309AACZWf+/vgkAAANP/78LOQAAm2L/v1wEAADeXv+/0DUAAB5s/78YAQAASm//v9szAAD5df+/AAAAAP9//78zMwAA/3//vxgBAAC0kP+/2zMAAAWK/79cBAAAIKH/v9A1AADgk/+/vgkAAPuw/78LOQAAY53/vyYRAAD/v/+/fT0AAGWm/79zGgAA683/vxFDAADArv+/fSUAAIHa/7+xSQAATbb/vxMyAACL5f+/PlEAAO28/7//PwAA2O7/v5lZAACBwv+/A08AAED2/7+bYgAA88b/v95eAACi+/+/HmwAAC7K/79KbwAA5v7/v/l1AAAjzP+//38AAP///7//fwAAzMz/v7SQAADm/v+/BYoAACPM/78goQAAovv/v+CTAAAuyv+/+7AAAED2/79jnQAA88b/v/+/AADY7v+/ZaYAAIHC/7/rzQAAi+X/v8CuAADtvP+/gdoAAIHa/79NtgAATbb/v4vlAADrzf+/7bwAAMCu/7/Y7gAA/7//v4HCAABlpv+/QPYAAPuw/7/zxgAAY53/v6L7AAAgof+/LsoAAOCT/7/m/gAAtJD/vyPMAAAFiv+/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/////f////3////9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_ofbkv")
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_uclci"]
+panorama = ExtResource("15_pfv5f")
+
+[sub_resource type="Sky" id="Sky_5saps"]
+sky_material = SubResource("PanoramaSkyMaterial_uclci")
+
+[sub_resource type="Environment" id="Environment_x7gs0"]
+background_mode = 2
+sky = SubResource("Sky_5saps")
+glow_enabled = true
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_g1wa3"]
+dof_blur_far_distance = 3072.0
+dof_blur_far_transition = 10.0
+dof_blur_amount = 0.03
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iy3hr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8k5dv"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("19_2tp5o")
+shader_parameter/spehereRadius = 0.25
+shader_parameter/objectScale = 1.0
+shader_parameter/outerColor = Color(0.386719, 0.0709991, 0.307789, 1)
+shader_parameter/outerRingExponent = 6.16
+shader_parameter/distortionStrength = 0.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_3romm"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_0c0n2")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_kcyta")
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="SubViewport" type="SubViewport" parent="."]
+own_world_3d = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Main" type="Node3D" parent="SubViewport"]
+
+[node name="SunSystem" type="Node3D" parent="SubViewport/Main"]
+
+[node name="Sun" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_cli0x")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SubViewport/Main/SunSystem/Sun"]
+light_color = Color(1, 0.903858, 0.765625, 1)
+light_energy = 16.0
+shadow_enabled = true
+shadow_bias = 1.415
+omni_range = 4096.0
+omni_attenuation = 0.635
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Sun"]
+transform = Transform3D(1.337, 0, 0, 0, 1.337, 0, 0, 0, 1.337, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_s5vic")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="RockPlanet" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 288.567, -1.90735e-06, -12.919)
+material_override = SubResource("StandardMaterial3D_c6seh")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+script = ExtResource("5_fqfwb")
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/RockPlanet"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_p6jsh")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="Mars" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(84.4871, 0, 0, 0, 84.4871, 0, 0, 0, 84.4871, 103.749, 1.33514e-05, 255.048)
+material_override = SubResource("StandardMaterial3D_x55gb")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+script = ExtResource("5_fqfwb")
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Mars"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_85h2w")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="Venus" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(44.8597, 0, 0, 0, 44.8597, 0, 0, 0, 44.8597, -249.567, -63.988, 238.327)
+material_override = SubResource("StandardMaterial3D_7q68p")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+script = ExtResource("5_fqfwb")
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Venus"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_ody80")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="Jupiter" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(121.565, 0, 0, 0, 121.565, 0, 0, 0, 121.565, -371.576, 90.902, -243.973)
+material_override = SubResource("StandardMaterial3D_vb7ho")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+script = ExtResource("5_fqfwb")
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Jupiter"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_7825r")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="Saturn" type="MeshInstance3D" parent="SubViewport/Main/SunSystem"]
+transform = Transform3D(146.406, 0, 0, 0, 146.406, 0, 0, 0, 146.406, 80.8198, -63.9837, -384.914)
+material_override = SubResource("StandardMaterial3D_oukjj")
+mesh = SubResource("SphereMesh_weelw")
+skeleton = NodePath("../..")
+script = ExtResource("5_fqfwb")
+
+[node name="AtmosSphereMesh" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Saturn"]
+transform = Transform3D(1.257, 0, 0, 0, 1.257, 0, 0, 0, 1.257, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_hix7i")
+mesh = SubResource("SphereMesh_77o0g")
+skeleton = NodePath("../../..")
+
+[node name="PlanetRing" type="Node3D" parent="SubViewport/Main/SunSystem/Saturn"]
+transform = Transform3D(0.73973, 0, 0, 0, 0.703899, -0.227435, 0, 0.227435, 0.703899, 0, 0, 0)
+
+[node name="Torus" type="MeshInstance3D" parent="SubViewport/Main/SunSystem/Saturn/PlanetRing"]
+material_override = SubResource("StandardMaterial3D_j6a6y")
+cast_shadow = 0
+mesh = SubResource("ArrayMesh_dketp")
+skeleton = NodePath("")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/Main"]
+environment = SubResource("Environment_x7gs0")
+camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
+
+[node name="BlackHoleNode" parent="SubViewport/Main" instance=ExtResource("16_tmojs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 171, 0, 0)
+
+[node name="AudioListener3D" type="AudioListener3D" parent="SubViewport/Main"]
+current = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="SubViewport/Main"]
+stream = ExtResource("17_0ho7r")
+volume_db = -20.0
+autoplay = true
+parameters/looping = true
+
+[node name="Player" type="CharacterBody3D" parent="SubViewport/Main" node_paths=PackedStringArray("blackHole")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 491, 8, 0)
+script = ExtResource("18_arjy4")
+blackHole = NodePath("../BlackHoleNode")
+mouseSpeed = 0.3
+rotationSpeed = 2.5
+steeringSpeed = 0.2
+steeringAccelaration = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SubViewport/Main/Player"]
+shape = SubResource("SphereShape3D_iy3hr")
+
+[node name="CamPivot" type="Node3D" parent="SubViewport/Main/Player"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/Main/Player/CamPivot"]
+fov = 60.0
+
+[node name="SpotLight3D" type="SpotLight3D" parent="SubViewport/Main/Player/CamPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.161, -0.786)
+spot_range = 799.772
+spot_angle = 38.8938
+
+[node name="SpaceShipsControls" parent="SubViewport/Main/Player/CamPivot" instance=ExtResource("19_h66wu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, 0.004)
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="SubViewport/Main/Player/CamPivot"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.667685, -0.373121)
+shadow_enabled = true
+spot_range = 1.16211
+spot_angle = 37.6212
+
+[node name="UIManager" type="Control" parent="SubViewport/Main/Player"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("20_gpnn0")
+
+[node name="PressToActionLabel" type="Label" parent="SubViewport/Main/Player/UIManager"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -89.0
+offset_top = 303.0
+offset_right = 89.0
+offset_bottom = 326.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "E - Feed The Black Hole"
+uppercase = true
+
+[node name="ColorRect" type="ColorRect" parent="SubViewport/Main/Player/UIManager"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(5, 5)
+mouse_filter = 2
+
+[node name="SubViewport2" type="SubViewport" parent="."]
+own_world_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="BlackHoleNode" type="Node3D" parent="SubViewport2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 171, 0, 0)
+script = ExtResource("18_3nh3o")
+
+[node name="BlackHoleMesh" type="MeshInstance3D" parent="SubViewport2/BlackHoleNode"]
+material_override = SubResource("ShaderMaterial_8k5dv")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_3romm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport2"]
+environment = SubResource("Environment_x7gs0")
+camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 170.374, 0, 4.00607)
+current = true
+fov = 60.0

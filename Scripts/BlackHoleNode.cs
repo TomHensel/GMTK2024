@@ -28,7 +28,7 @@ public partial class BlackHoleNode : Node3D
 
 	public void feed(float amount)
 	{
-		blackHoleScale += amount;
+		blackHoleScale += amount * 30f;
 		GD.Print(blackHoleScale);
 		blackHoleMesh.Scale = new Vector3(blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale);
 		blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.5);

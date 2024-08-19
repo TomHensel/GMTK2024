@@ -7,6 +7,44 @@ Irgendwas mit schwarzen loch
 		-(You were born for only one purpose: TO EAT) kommt am anfang des spiels eingeblendet
 	-Du musst in einem raumschiff metoireten und planeten zerstören um materialen zu bekommen
 	-am anfang kannst du nur meteoriten zerstören am ende ganze sonnen (Planet generation wie das eine von sebastian lague)
+	
+	du kannst dir beim schwarzen loch immer bessere tools zum zerstören kaufen
+		z.b laser die man auf planeneten schießt um sie zu zerstören, um so mehr laser man auf einen planeten schießt um so schneller wird er
+		zerstört
+	
+	das schwarze loch muss eine bestimmte größe erreich haben um bestimmte items zu unlocken
+	
+	am anfang kann man nur selbst meteoriten zerstören
+	
+	
 
 Man muss kleine systeme bauen die dann verpackt werden um immer grßere system zu bauen
 
+
+ToDos:
+	-Sonnensystem: Verschiedene planeten (z.B. mit ring) die um sonne kreisen(vielleicht das mit dem kreisen raus lassen)
+	-asteroiden kreis ums system
+	-Schiff Laser mit dem man die asteroiden zerstören kann
+	-LaserModell plus laser effekt
+		-Laser sollen random um planeten kreisen
+	-UI indikatoren wo sich das schwarze loch befindet
+	-Schwarzes Loch shop wo man die items kaufen kann
+	-SoundEffekte
+	
+sources:
+https://commons.wikimedia.org/wiki/Main_Page
+https://www.youtube.com/watch?v=NtVABru6OXE
+
+"That Zen Moment " Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+
+vieleicht:
+"Ambiment" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+
+"Opium" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+	

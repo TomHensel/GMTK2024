@@ -20,22 +20,30 @@ public partial class Player : CharacterBody3D
 
 	private float steeringValue = 0;
 
-	private Node3D parrentNode;
+	//private Node3D parrentNode;
 
 	private Vector2 normMousePos = Vector2.Zero;
 
 	private Vector3 camRotation = Vector3.Zero;
 
 	private UiManager uiManager;
+
+	private TextureRect mouseUi;
+	
+	private Line2D line;
 	
 	public override void _Ready()
 	{
+		line = GetNode<Line2D>("UIManager/Line2D");
+		
 		camPivot = GetNode<Node3D>("CamPivot");
 		cam = GetNode<Camera3D>("CamPivot/Camera3D");
-		parrentNode = GetNode<Node3D>("..");
+		//parrentNode = GetNode<Node3D>("..");
 		uiManager = GetNode<UiManager>("UIManager");
 		
 		Input.MouseMode = Input.MouseModeEnum.Confined;
+
+		mouseUi = GetNode<TextureRect>("UIManager/MousePointer");
 
 	}
 
@@ -45,7 +53,7 @@ public partial class Player : CharacterBody3D
 		float dTime = (float) delta;
 		Vector2 input_dir = Input.GetVector("Right","Left" , "Forward", "Backward");
 
-		steeringValue = Mathf.LerpAngle(steeringValue,  Mathf.DegToRad(input_dir.X*steeringSpeed), dTime * steeringAccelaration);
+		steeringValue = Mathf.Lerp(steeringValue,  Mathf.DegToRad(input_dir.X*steeringSpeed), dTime * steeringAccelaration);
 		
 		float usedSpeed = 20;
 		float usedRotationSpeed = rotationSpeed;
@@ -95,7 +103,8 @@ public partial class Player : CharacterBody3D
 		}
 	}
 
-	public override void _Input(InputEvent @event)
+	
+	public override void _UnhandledInput(InputEvent @event)
 	{ 
 		base._Input(@event);
 		
@@ -120,10 +129,82 @@ public partial class Player : CharacterBody3D
 		
 	}
 	
+	// public void handInput(InputEvent @event)
+	// { 
+	// 	base._Input(@event);
+	// 	
+	// 	if (@event is InputEventMouseMotion)
+	// 	{
+	// 		moveCamera((InputEventMouseMotion)@event);
+	// 	}
+	// 	
+	// 	if (@event.IsActionPressed("Escape"))
+	// 	{
+	// 		
+	// 		if (Input.MouseMode == Input.MouseModeEnum.Visible)
+	// 		{
+	// 			Input.MouseMode = Input.MouseModeEnum.ConfinedHidden;
+	// 		}
+	// 		else
+	// 		{
+	// 			Input.MouseMode = Input.MouseModeEnum.Visible;
+	// 		}
+	// 		
+	// 	}
+	// 	
+	// }
+	
 	private void moveCamera(InputEventMouseMotion @event)
 	{
 
-		normMousePos = (@event.Position / new Vector2(1920f, 1080f)) -new Vector2(0.5f,0.5f);
+		Vector2 evPos = @event.Position;
+
+		Rect2 visRect = GetViewport().GetVisibleRect();
+
+		float distanceToEvPos = visRect.GetCenter().DistanceTo(evPos);
+		Vector2 direectionToEvPos = visRect.GetCenter().DirectionTo(evPos);
+		
+		line.ClearPoints();
+
+		
+		if (distanceToEvPos > 500)
+		{
+			evPos = visRect.GetCenter() + direectionToEvPos*500;
+			// if (Input.MouseMode == Input.MouseModeEnum.ConfinedHidden)
+			// {
+			// 	Input.WarpMouse(evPos);
+			// }
+
+			line.AddPoint(visRect.GetCenter() +direectionToEvPos * 32f);
+			line.AddPoint(evPos - direectionToEvPos*16f);
+		}
+		else if (distanceToEvPos < 16f)
+		{
+			evPos = visRect.GetCenter();
+		}
+		else
+		{
+			line.AddPoint(visRect.GetCenter() +direectionToEvPos * 32f);
+			line.AddPoint(evPos -direectionToEvPos*16f);
+		}
+		
+	
+		
+
+		float aspectRatio = visRect.Size.Y / visRect.Size.X;
+		//GD.Print(aspectRatio);
+		
+		//Vector2 usedPos = new Vector2(evPos.X, evPos.Y * aspectRatio );
+		
+		Vector2 usedPos = (evPos / visRect.Size) -new Vector2(0.5f,0.5f);
+		usedPos = new Vector2(usedPos.X, usedPos.Y * aspectRatio );
+		normMousePos = usedPos;
+		
+		mouseUi.Position = evPos - new Vector2(16,16);
+		
+	
+		
+		
 		
 	}
 	

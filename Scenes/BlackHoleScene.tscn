@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://ccayaplqjcekp"]
+
+[ext_resource type="Script" path="res://Scripts/BlackHoleNode.cs" id="1_slba7"]
+[ext_resource type="Shader" uid="uid://cgi4i72u5h84u" path="res://Shader/BlackHoleShader.tres" id="2_2lqbs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y3gxw"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_2lqbs")
+shader_parameter/spehereRadius = 0.25
+shader_parameter/objectScale = 1.0
+shader_parameter/outerColor = Color(0.386719, 0.0709991, 0.307789, 1)
+shader_parameter/outerRingExponent = 6.16
+shader_parameter/distortionStrength = 0.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_3romm"]
+
+[node name="BlackHoleNode" type="Node3D"]
+script = ExtResource("1_slba7")
+
+[node name="BlackHoleMesh" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_y3gxw")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_3romm")
