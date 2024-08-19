@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcwwy2ulqxvum"]
+
+[ext_resource type="Script" path="res://Scripts/Line3d.cs" id="1_x11xk"]
+
+[sub_resource type="Curve3D" id="Curve3D_2qpm8"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 160, 0, 0, 0, 0, 0, 0, 0, 0, 160, 14.2693, 19.3795),
+"tilts": PackedFloat32Array(0, 0)
+}
+point_count = 2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_oxwjq"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 16.0
+
+[node name="Line3D" type="Node3D"]
+script = ExtResource("1_x11xk")
+lineResolution = 11
+
+[node name="Path3D" type="Path3D" parent="."]
+curve = SubResource("Curve3D_2qpm8")
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="."]
+material_override = SubResource("StandardMaterial3D_oxwjq")
+polygon = PackedVector2Array(0, 0.1, 0.0540641, 0.0841254, 0.0909632, 0.0415415, 0.0989821, -0.0142315, 0.0755749, -0.0654861, 0.0281732, -0.0959493, -0.0281733, -0.0959493, -0.075575, -0.0654861, -0.0989821, -0.0142315, -0.0909632, 0.0415415, -0.054064, 0.0841254)
+mode = 2
+path_node = NodePath("../Path3D")
+path_interval_type = 1
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false

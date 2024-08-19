@@ -8,9 +8,9 @@ void vertex() {
 }
 
 void fragment() {
-	
+
 	float NDotV = clamp(pow(dot(NORMAL, VIEW),5.0),0.0,1.0);
-	
+
 	ALBEDO = AtmosphereColor;
 	EMISSION = AtmosphereColor;
 	ALPHA = NDotV;

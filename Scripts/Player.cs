@@ -5,8 +5,10 @@ public partial class Player : CharacterBody3D
 	// Called when the node enters the scene tree for the first time.
 
 	public float BlackHoleFoodAmount;
-	public int planetDestoyerAmount = 100;
+	public int planetDestoyerAmount = 0;
 	public int sunDestoyerAmount = 0;
+
+	private bool planetDestroyerUnlocked = false;
 
 	[Export] private PlanetDestroyer planetDestroyer;
 	
@@ -99,6 +101,11 @@ public partial class Player : CharacterBody3D
 		handleInteraction(dTime);
 
 		handleSunSystem();
+
+		if (blackHole.blackHoleScale >= 50f)
+		{
+			planetDestroyerUnlocked = true;
+		}
 	}
 
 	public void handleSunSystem()
@@ -111,7 +118,7 @@ public partial class Player : CharacterBody3D
 			{
 				if (planet.IsInGroup("Sun"))
 				{
-					uiManager.pressToActionLabel.Text = "E - Place Star Destroyer";
+					uiManager.pressToActionLabel.Text = "";
 
 				}
 				else if(planetDestoyerAmount > 0)
@@ -125,7 +132,9 @@ public partial class Player : CharacterBody3D
 						newPlanetDestroyer.LookAtFromPosition( newPlanetDestroyer.Position,planet.Position, Vector3.Up);
 						newPlanetDestroyer.planet = planet;
 						newPlanetDestroyer.Visible = true;
-
+						//newPlanetDestroyer.player = this;
+						newPlanetDestroyer.blackHole = blackHole;
+						
 						planetDestoyerAmount--;
 						
 						//AddChild(newPlanetDestroyer);
@@ -186,13 +195,21 @@ public partial class Player : CharacterBody3D
 				ShopItem shopItem = (ShopItem) colliderObject;
 				if (shopItem.itemType == 0)
 				{
-					uiManager.pressToActionLabel.Text = "E - 100 To Buy Planet Destroyer";
-					if (Input.IsActionJustPressed("Interact") && BlackHoleFoodAmount >= 100)
+					if (planetDestroyerUnlocked)
 					{
-						BlackHoleFoodAmount -= 100;
-						planetDestoyerAmount++;
-						changeFoodUi();
+						uiManager.pressToActionLabel.Text = "E - 100 To Buy Planet Destroyer";
+						if (Input.IsActionJustPressed("Interact") && BlackHoleFoodAmount >= 100)
+						{
+							BlackHoleFoodAmount -= 100;
+							planetDestoyerAmount++;
+							changeFoodUi();
+						}
 					}
+					else
+					{
+						uiManager.pressToActionLabel.Text = "Give Black Hole 50 to Unlock PlanetDestroyer";
+					}
+
 					//planetDestoyerAmount++;
 				}
 			}
@@ -205,21 +222,30 @@ public partial class Player : CharacterBody3D
 		{
 			if (BlackHoleFoodAmount <= 0.0001f)
 			{
-				uiManager.pressToActionLabel.Text = "You need Material to feed the Black Hole";
+				uiManager.pressToActionLabel.Text = "You need Material to feed the Black Hole \n Q - Take Material";
 			}
 			else
 			{
-				uiManager.pressToActionLabel.Text = "E - Feed the black hole";
+				uiManager.pressToActionLabel.Text = "E - Give Material \n Q - Take Material";
 			}
 
 
 			if (Input.IsActionPressed("Interact") && BlackHoleFoodAmount > 0)
 			{
-				float actualAmount = dTime * 10;
+				float actualAmount = dTime * 10f;
 				blackHole.feed(actualAmount);
 				BlackHoleFoodAmount -= actualAmount;
 				changeFoodUi();
 			}
+
+			if (Input.IsActionPressed("Take"))
+			{
+				BlackHoleFoodAmount += blackHole.take(dTime * 10f,dTime);
+				changeFoodUi();
+
+			}
+			
+			
 		}
 		// else
 		// {
@@ -281,55 +307,59 @@ public partial class Player : CharacterBody3D
 	private void moveCamera(InputEventMouseMotion @event)
 	{
 
-		Vector2 evPos = @event.Position;
-
-		Rect2 visRect = GetViewport().GetVisibleRect();
-
-		float distanceToEvPos = visRect.GetCenter().DistanceTo(evPos);
-		Vector2 direectionToEvPos = visRect.GetCenter().DirectionTo(evPos);
-		
-		line.ClearPoints();
-
-		
-		if (distanceToEvPos > 500)
+		if (Input.MouseMode == Input.MouseModeEnum.Confined)
 		{
-			evPos = visRect.GetCenter() + direectionToEvPos*500;
-			// if (Input.MouseMode == Input.MouseModeEnum.ConfinedHidden)
-			// {
-			// 	Input.WarpMouse(evPos);
-			// }
 
-			line.AddPoint(visRect.GetCenter() +direectionToEvPos * 32f);
-			line.AddPoint(evPos - direectionToEvPos*16f);
-		}
-		else if (distanceToEvPos < 16f)
-		{
-			evPos = visRect.GetCenter();
-		}
-		else
-		{
-			line.AddPoint(visRect.GetCenter() +direectionToEvPos * 32f);
-			line.AddPoint(evPos -direectionToEvPos*16f);
-		}
-		
-	
-		
 
-		float aspectRatio = visRect.Size.Y / visRect.Size.X;
-		//GD.Print(aspectRatio);
-		
-		//Vector2 usedPos = new Vector2(evPos.X, evPos.Y * aspectRatio );
-		
-		Vector2 usedPos = (evPos / visRect.Size) -new Vector2(0.5f,0.5f);
-		usedPos = new Vector2(usedPos.X, usedPos.Y * aspectRatio );
-		normMousePos = usedPos;
-		
-		mouseUi.Position = evPos - new Vector2(16,16);
-		
-	
-		
-		
-		
+			Vector2 evPos = @event.Position;
+
+			Rect2 visRect = GetViewport().GetVisibleRect();
+
+			float distanceToEvPos = visRect.GetCenter().DistanceTo(evPos);
+			Vector2 direectionToEvPos = visRect.GetCenter().DirectionTo(evPos);
+
+			line.ClearPoints();
+
+
+			if (distanceToEvPos > 500)
+			{
+				evPos = visRect.GetCenter() + direectionToEvPos * 500;
+				// if (Input.MouseMode == Input.MouseModeEnum.ConfinedHidden)
+				// {
+				// 	Input.WarpMouse(evPos);
+				// }
+
+				line.AddPoint(visRect.GetCenter() + direectionToEvPos * 32f);
+				line.AddPoint(evPos - direectionToEvPos * 16f);
+			}
+			else if (distanceToEvPos < 16f)
+			{
+				evPos = visRect.GetCenter();
+			}
+			else
+			{
+				line.AddPoint(visRect.GetCenter() + direectionToEvPos * 32f);
+				line.AddPoint(evPos - direectionToEvPos * 16f);
+			}
+
+
+
+
+			float aspectRatio = visRect.Size.Y / visRect.Size.X;
+			//GD.Print(aspectRatio);
+
+			//Vector2 usedPos = new Vector2(evPos.X, evPos.Y * aspectRatio );
+
+			Vector2 usedPos = (evPos / visRect.Size) - new Vector2(0.5f, 0.5f);
+			usedPos = new Vector2(usedPos.X, usedPos.Y * aspectRatio);
+			normMousePos = usedPos;
+
+			mouseUi.Position = evPos - new Vector2(16, 16);
+
+
+		}
+
+
 	}
 	
 }

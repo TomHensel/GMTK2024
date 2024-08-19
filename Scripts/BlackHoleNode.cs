@@ -22,12 +22,7 @@ public partial class BlackHoleNode : Node3D
 		//blackHoleMat.Set("shader_parameter/spehereRadius",0.5);
 
 	}
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-		
-	}
+	
 
 	public void feed(float amount)
 	{
@@ -40,5 +35,32 @@ public partial class BlackHoleNode : Node3D
 		blackHoleMesh.Scale = new Vector3(blackHoleScale, blackHoleScale, blackHoleScale);
 		blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.25);
         blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
+	}
+
+	public float take(float takenAmount, float dTime)
+	{
+		float scaleMinTaken = blackHoleScale - takenAmount;
+		if (scaleMinTaken > 1f)
+		{
+			blackHoleScale = scaleMinTaken;
+			blackHoleMesh.Scale = new Vector3(blackHoleScale, blackHoleScale, blackHoleScale);
+			blackHoleMesh.Position += new Vector3(0,0,takenAmount / 2f);
+			blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.25);
+			blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
+			
+			return takenAmount - dTime*0.25f;
+		}
+
+		//scaleMinTaken = blackHoleScale - (blackHoleScale-1.0f);
+		
+		// blackHoleScale = scaleMinTaken;
+		// blackHoleMesh.Scale = new Vector3(blackHoleScale, blackHoleScale, blackHoleScale);
+		// blackHoleMesh.Position += new Vector3(0,0,takenAmount / 2f);
+		// blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.25);
+		// blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
+		
+		return 0f;
+		
+
 	}
 }

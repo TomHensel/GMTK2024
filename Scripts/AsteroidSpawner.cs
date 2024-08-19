@@ -11,6 +11,8 @@ public partial class AsteroidSpawner : Node3D
 
 	[Export] private int amount = 100;
 	[Export] private float asteroidDistance = 100;
+
+	public Array<MeshInstance3D> allAsteroids = new Array<MeshInstance3D>();
     
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -51,6 +53,7 @@ public partial class AsteroidSpawner : Node3D
 					newAsteroid.Position = (new Vector3(GD.Randf() * 2f -1f,GD.Randf()* 2f -1f,GD.Randf()* 2f -1f)).Normalized() * asteroidDistance;
 
 					mainNode.AddChild(newAsteroid);
+					allAsteroids.Add(newAsteroid);
 				}
 			}
 
