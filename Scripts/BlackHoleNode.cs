@@ -8,10 +8,13 @@ public partial class BlackHoleNode : Node3D
 	public float blackHoleScale = 1.0f;
 
 	private Material blackHoleMat;
+
+	public MeshInstance3D blackHoleFeeder;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		blackHoleFeeder = GetNode<MeshInstance3D>("BlackHoleFeeder");
 		blackHoleMesh = GetNode<MeshInstance3D>("BlackHoleMesh");
 		blackHoleScale = blackHoleMesh.Scale.X;
 		blackHoleMat =  blackHoleMesh.MaterialOverride;
@@ -28,10 +31,14 @@ public partial class BlackHoleNode : Node3D
 
 	public void feed(float amount)
 	{
-		blackHoleScale += amount * 30f;
-		GD.Print(blackHoleScale);
-		blackHoleMesh.Scale = new Vector3(blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale, blackHoleScale + blackHoleScale);
-		blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.5);
+		float addedAmount = amount;
+		blackHoleScale += addedAmount;
+		blackHoleMesh.Position -= new Vector3(0,0,addedAmount / 2f);
+		//blackHoleFeeder.Position += new Vector3(0, 0, addedAmount/2f);
+		// GD.Print(blackHoleFeeder.Position);
+		// GD.Print(blackHoleScale);
+		blackHoleMesh.Scale = new Vector3(blackHoleScale, blackHoleScale, blackHoleScale);
+		blackHoleMat.Set("shader_parameter/spehereRadius",blackHoleScale * 0.25);
         blackHoleMat.Set("shader_parameter/objectScale", blackHoleMesh.Scale.X);
 	}
 }

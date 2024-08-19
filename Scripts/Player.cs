@@ -1,10 +1,18 @@
 using Godot;
-using System;
 
 public partial class Player : CharacterBody3D
 {
 	// Called when the node enters the scene tree for the first time.
 
+	public float BlackHoleFoodAmount;
+	public int planetDestoyerAmount = 100;
+	public int sunDestoyerAmount = 0;
+
+	[Export] private PlanetDestroyer planetDestroyer;
+	
+
+	[Export] private Node3D sunSystem; 
+	
 	private Node3D camPivot;
 	private Camera3D cam;
 
@@ -15,6 +23,8 @@ public partial class Player : CharacterBody3D
 	[Export] private float rotationSpeed = 5f;
 	[Export] private float steeringSpeed = 0.1f;
 	[Export] private float steeringAccelaration = 5f;
+
+	private RayCast3D interactRay;
 	
 	private Vector3 vel = Vector3.Zero;
 
@@ -35,6 +45,7 @@ public partial class Player : CharacterBody3D
 	public override void _Ready()
 	{
 		line = GetNode<Line2D>("UIManager/Line2D");
+		interactRay = GetNode<RayCast3D>("CamPivot/RayCast3D");
 		
 		camPivot = GetNode<Node3D>("CamPivot");
 		cam = GetNode<Camera3D>("CamPivot/Camera3D");
@@ -67,7 +78,7 @@ public partial class Player : CharacterBody3D
 		
 		camPivot.Rotate(cam.GlobalBasis.X, -normMousePos.Y*dTime * usedRotationSpeed);
 		camPivot.Rotate(cam.GlobalTransform.Basis.Y, -normMousePos.X*dTime * usedRotationSpeed);
-		camPivot.Rotate(cam.GlobalTransform.Basis.Z, steeringValue * dTime * 240f);
+		camPivot.Rotate(cam.GlobalTransform.Basis.Z, steeringValue * dTime * 60);
 		
 
 		Vector3 direction = cam.GlobalTransform.Basis.Z * input_dir.Y;
@@ -75,34 +86,145 @@ public partial class Player : CharacterBody3D
 				
 
 
-		vel = vel.Lerp(direction * usedSpeed, dTime); 
+		vel = Velocity.Lerp(direction * usedSpeed, dTime); 
 
 				
 		Velocity = vel;
 		
 		MoveAndSlide();
 		
-		
+		uiManager.pressToActionLabel.Text = "";
 		handleBlackHole(dTime);
+		
+		handleInteraction(dTime);
 
+		handleSunSystem();
+	}
+
+	public void handleSunSystem()
+	{
+		foreach (MeshInstance3D planet in sunSystem.GetChildren())
+		{
+			//GD.Print(planet);
+
+			if (Position.DistanceTo(planet.GlobalPosition) < planet.Scale.X / 2f + planet.Scale.X / 4f)
+			{
+				if (planet.IsInGroup("Sun"))
+				{
+					uiManager.pressToActionLabel.Text = "E - Place Star Destroyer";
+
+				}
+				else if(planetDestoyerAmount > 0)
+				{
+					uiManager.pressToActionLabel.Text = "E - Place Planet Destroyer";
+					if (Input.IsActionJustPressed("Interact") && planetDestoyerAmount > 0)
+					{
+						PlanetDestroyer newPlanetDestroyer= (PlanetDestroyer) planetDestroyer.Duplicate();
+						//newPlanetDestroyer.Position = Position;
+						newPlanetDestroyer.Position = planet.Position + planet.Position.DirectionTo(Position)*(planet.Scale.X/2f + planet.Scale.X / 8f);
+						newPlanetDestroyer.LookAtFromPosition( newPlanetDestroyer.Position,planet.Position, Vector3.Up);
+						newPlanetDestroyer.planet = planet;
+						newPlanetDestroyer.Visible = true;
+
+						planetDestoyerAmount--;
+						
+						//AddChild(newPlanetDestroyer);
+						GetTree().Root.AddChild(newPlanetDestroyer);
+					}
+				}
+			}
+		}
+
+		if (planetDestoyerAmount > 0)
+		{
+			uiManager.planetDestroyerIcon.Show();
+			uiManager.planetDestroyerLabel.Show();
+			uiManager.planetDestroyerLabel.Text = planetDestoyerAmount.ToString();
+		}
+		else
+		{
+			uiManager.planetDestroyerIcon.Hide();
+			uiManager.planetDestroyerLabel.Hide();
+		}
+	}
+
+	public void changeFoodUi()
+	{
+		if (BlackHoleFoodAmount < 0f)
+		{
+			BlackHoleFoodAmount = 0f;
+		}
+		
+		uiManager.blackHoleFoodLabel.Text = (BlackHoleFoodAmount).ToString("#.##");
+	}
+
+
+	public void handleInteraction(float dTime)
+	{
+		uiManager.rayUi.Hide();
+		if (interactRay.IsColliding())
+		{
+			GodotObject colliderObject = interactRay.GetCollider();
+			if (colliderObject is AsteroidCollider)
+			{
+				AsteroidCollider collider = (AsteroidCollider) colliderObject;
+				//GD.Print(collider);
+				//uiManager.crossHair.Scale = new Vector2(5,5);
+
+				if (Input.IsActionPressed("MouseLeft"))
+				{
+					float destroyedAmount = dTime * 3f;
+					collider.Destroy(destroyedAmount);
+					BlackHoleFoodAmount += destroyedAmount;
+					changeFoodUi();
+				}
+				
+				uiManager.rayUi.Show();
+			}
+			else if (colliderObject is ShopItem)
+			{
+				ShopItem shopItem = (ShopItem) colliderObject;
+				if (shopItem.itemType == 0)
+				{
+					uiManager.pressToActionLabel.Text = "E - 100 To Buy Planet Destroyer";
+					if (Input.IsActionJustPressed("Interact") && BlackHoleFoodAmount >= 100)
+					{
+						BlackHoleFoodAmount -= 100;
+						planetDestoyerAmount++;
+						changeFoodUi();
+					}
+					//planetDestoyerAmount++;
+				}
+			}
+		}
 	}
 
 	public void handleBlackHole(float dTime)
 	{
-		if (Position.DistanceTo(blackHole.Position) < 5f)
+		if (Position.DistanceTo(blackHole.blackHoleFeeder.GlobalPosition) < 5f)
 		{
-			uiManager.pressToActionLabel.Text = "E - Feed the black hole";
-			//GD.Print("Feed The Black Hole");
-
-			if (Input.IsActionPressed("Interact"))
+			if (BlackHoleFoodAmount <= 0.0001f)
 			{
-				blackHole.feed(dTime);
+				uiManager.pressToActionLabel.Text = "You need Material to feed the Black Hole";
+			}
+			else
+			{
+				uiManager.pressToActionLabel.Text = "E - Feed the black hole";
+			}
+
+
+			if (Input.IsActionPressed("Interact") && BlackHoleFoodAmount > 0)
+			{
+				float actualAmount = dTime * 10;
+				blackHole.feed(actualAmount);
+				BlackHoleFoodAmount -= actualAmount;
+				changeFoodUi();
 			}
 		}
-		else
-		{
-			uiManager.pressToActionLabel.Text = "";
-		}
+		// else
+		// {
+		// 	uiManager.pressToActionLabel.Text = "";
+		// }
 	}
 
 	

@@ -22,14 +22,18 @@ Man muss kleine systeme bauen die dann verpackt werden um immer grßere system z
 
 
 ToDos:
-	-Sonnensystem: Verschiedene planeten (z.B. mit ring) die um sonne kreisen(vielleicht das mit dem kreisen raus lassen)
-	-asteroiden kreis ums system
+	//-Sonnensystem: Verschiedene planeten (z.B. mit ring) die um sonne kreisen(vielleicht das mit dem kreisen raus lassen)
+	//-asteroiden kreis ums system
 	-Schiff Laser mit dem man die asteroiden zerstören kann
 	-LaserModell plus laser effekt
 		-Laser sollen random um planeten kreisen
-	-UI indikatoren wo sich das schwarze loch befindet
+	//-UI indikatoren wo sich das schwarze loch befindet
 	-Schwarzes Loch shop wo man die items kaufen kann
+		-Mann muss sich entscheiden ob man die materialien ins schwarze loch tut oder für items ausgibt
 	-SoundEffekte
+	-asteroid hunter
+	-wenn zeit da ist auch noch tranporter die die materialien von den lasern zum schwarzen loch bringen
+	
 	
 sources:
 https://commons.wikimedia.org/wiki/Main_Page

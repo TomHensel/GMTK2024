@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://b65wu7mtb3pnn"]
+[gd_scene load_steps=72 format=4 uid="uid://b65wu7mtb3pnn"]
 
 [ext_resource type="Texture2D" uid="uid://ddyoc8y534365" path="res://Textures/panorama_image(3).png" id="1_5e462"]
 [ext_resource type="Texture2D" uid="uid://bb1hq1f3iu5vo" path="res://Textures/Solarsystemscope_texture_2k_sun.jpg" id="1_6dg52"]
@@ -19,14 +19,19 @@
 [ext_resource type="Texture2D" uid="uid://cg4u3j5yjqt38" path="res://Textures/Solarsystemscope_texture_8k_jupiterNormal.jpg" id="10_cpy5p"]
 [ext_resource type="Texture2D" uid="uid://swlavflmawml" path="res://Textures/Solarsystemscope_texture_8k_saturnNormal.jpg" id="12_m3y2v"]
 [ext_resource type="AudioStream" uid="uid://3ui0w8rmxevp" path="res://Sounds/Music/That Zen Moment.mp3" id="15_x7jp4"]
-[ext_resource type="PackedScene" uid="uid://ccayaplqjcekp" path="res://Scenes/BlackHoleScene.tscn" id="16_2amoo"]
+[ext_resource type="Script" path="res://Scripts/BlackHoleNode.cs" id="16_0cv8x"]
 [ext_resource type="PackedScene" uid="uid://cbpq4jus17jm3" path="res://Scenes/ui_indicator.tscn" id="17_ek7mq"]
+[ext_resource type="Shader" uid="uid://cgi4i72u5h84u" path="res://Shader/BlackHoleShader.tres" id="17_nfr1j"]
+[ext_resource type="Script" path="res://Scripts/PlanetDestroyer.cs" id="19_c5sok"]
+[ext_resource type="Script" path="res://Scripts/ShopItem.cs" id="20_b6nne"]
 [ext_resource type="Texture2D" uid="uid://c73ufvmxjbncp" path="res://Textures/Circle16.png" id="22_4jk05"]
 [ext_resource type="Shader" path="res://Shader/ui_indicator.gdshader" id="22_yf583"]
 [ext_resource type="Texture2D" uid="uid://bi8twef24ddbl" path="res://Textures/Crosshair.png" id="23_mf20u"]
 [ext_resource type="Shader" path="res://Shader/LineUi.gdshader" id="25_mstjh"]
 [ext_resource type="Script" path="res://Scripts/AsteroidSpawner.cs" id="26_ist7e"]
 [ext_resource type="ArrayMesh" uid="uid://bbsmptsaxt45h" path="res://Models/Meshes/AsteroidMesh1.tres" id="27_gamp7"]
+[ext_resource type="Texture2D" uid="uid://d4a4kkga0uix3" path="res://Textures/PlanetDestroyerIcon.png" id="28_0rhbf"]
+[ext_resource type="Script" path="res://Scripts/AsteroidCollider.cs" id="28_p16r8"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cli0x"]
 albedo_color = Color(1, 0.758126, 0.457581, 1)
@@ -150,6 +155,31 @@ dof_blur_far_distance = 3072.0
 dof_blur_far_transition = 10.0
 dof_blur_amount = 0.03
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5i6ff"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("17_nfr1j")
+shader_parameter/spehereRadius = 0.25
+shader_parameter/objectScale = 1.0
+shader_parameter/outerColor = Color(0.386719, 0.0709991, 0.307789, 1)
+shader_parameter/outerRingExponent = 6.16
+shader_parameter/distortionStrength = 0.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_3romm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_jh5f8"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_6qr8i"]
+top_radius = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xc03w"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ybls1"]
+albedo_color = Color(0.0988464, 0.605039, 0.617188, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_5wb5x"]
+top_radius = 0.0
+
 [sub_resource type="SphereShape3D" id="SphereShape3D_iy3hr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6l8lx"]
@@ -162,6 +192,9 @@ shader_parameter/mainTexture = ExtResource("23_mf20u")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ts7e0"]
 shader = ExtResource("25_mstjh")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jba1a"]
+radius = 2.3
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4an7k"]
 resource_name = "Material"
@@ -240,7 +273,7 @@ shadow_mesh = SubResource("ArrayMesh_uvyu1")
 
 [node name="SunSystem" type="Node3D" parent="."]
 
-[node name="Sun" type="MeshInstance3D" parent="SunSystem"]
+[node name="Sun" type="MeshInstance3D" parent="SunSystem" groups=["Sun"]]
 transform = Transform3D(200, 0, 0, 0, 200, 0, 0, 0, 200, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_cli0x")
 mesh = SubResource("SphereMesh_weelw")
@@ -338,10 +371,46 @@ skeleton = NodePath("")
 environment = SubResource("Environment_x7gs0")
 camera_attributes = SubResource("CameraAttributesPractical_g1wa3")
 
-[node name="BlackHoleNode" parent="." instance=ExtResource("16_2amoo")]
+[node name="BlackHoleNode" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 171, 0, 0)
+script = ExtResource("16_0cv8x")
 
-[node name="UIIndicator" parent="BlackHoleNode" instance=ExtResource("17_ek7mq")]
+[node name="BlackHoleMesh" type="MeshInstance3D" parent="BlackHoleNode"]
+material_override = SubResource("ShaderMaterial_5i6ff")
+cast_shadow = 0
+mesh = SubResource("SphereMesh_3romm")
+
+[node name="BlackHoleFeeder" type="MeshInstance3D" parent="BlackHoleNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+mesh = SubResource("BoxMesh_jh5f8")
+
+[node name="UIIndicator" parent="BlackHoleNode/BlackHoleFeeder" instance=ExtResource("17_ek7mq")]
+
+[node name="Items" type="Node3D" parent="BlackHoleNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+visible = false
+
+[node name="PlanetDestroyer" type="Node3D" parent="BlackHoleNode/Items"]
+visible = false
+script = ExtResource("19_c5sok")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlackHoleNode/Items/PlanetDestroyer"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CylinderMesh_6qr8i")
+
+[node name="Shop" type="Node3D" parent="BlackHoleNode"]
+
+[node name="BuyPlanetDestroyer" type="StaticBody3D" parent="BlackHoleNode/Shop"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+script = ExtResource("20_b6nne")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BlackHoleNode/Shop/BuyPlanetDestroyer"]
+shape = SubResource("BoxShape3D_xc03w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="BlackHoleNode/Shop/BuyPlanetDestroyer"]
+material_override = SubResource("StandardMaterial3D_ybls1")
+mesh = SubResource("CylinderMesh_5wb5x")
+skeleton = NodePath("")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("15_x7jp4")
@@ -349,13 +418,16 @@ volume_db = -20.0
 autoplay = true
 parameters/looping = true
 
-[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("blackHole")]
+[node name="Player" type="CharacterBody3D" parent="." node_paths=PackedStringArray("planetDestroyer", "sunSystem", "blackHole")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 491, 8, 0)
+collision_layer = 2
 script = ExtResource("1_ar13k")
+planetDestroyer = NodePath("../BlackHoleNode/Items/PlanetDestroyer")
+sunSystem = NodePath("../SunSystem")
 blackHole = NodePath("../BlackHoleNode")
 mouseSpeed = 0.3
 rotationSpeed = 2.5
-steeringSpeed = 0.05
+steeringSpeed = 0.5
 steeringAccelaration = 2.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
@@ -381,6 +453,9 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.6
 shadow_enabled = true
 spot_range = 1.16211
 spot_angle = 37.6212
+
+[node name="RayCast3D" type="RayCast3D" parent="Player/CamPivot"]
+target_position = Vector3(0, 0, -100)
 
 [node name="UIManager" type="Control" parent="Player"]
 layout_mode = 3
@@ -425,9 +500,64 @@ offset_right = 992.0
 offset_bottom = 572.0
 texture = ExtResource("23_mf20u")
 
+[node name="RayUi" type="TextureRect" parent="Player/UIManager"]
+visible = false
+modulate = Color(1, 0, 0, 1)
+layout_mode = 1
+offset_left = 928.0
+offset_top = 508.0
+offset_right = 992.0
+offset_bottom = 572.0
+texture = ExtResource("23_mf20u")
+
 [node name="Line2D" type="Line2D" parent="Player/UIManager"]
 material = SubResource("ShaderMaterial_ts7e0")
 width = 2.0
+
+[node name="BlackHoleFoodLabel" type="Label" parent="Player/UIManager"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_top = 30.0
+offset_right = 20.0
+offset_bottom = 75.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+
+[node name="PlanetDestroyerLabel" type="Label" parent="Player/UIManager"]
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 800.0
+offset_top = 1020.0
+offset_right = 840.0
+offset_bottom = 1065.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 32
+text = "0"
+horizontal_alignment = 1
+
+[node name="PlanetDestroyerIcon" type="TextureRect" parent="Player/UIManager"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -100.0
+offset_right = -120.0
+offset_bottom = -60.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("28_0rhbf")
 
 [node name="Asteroids" type="Node3D" parent="."]
 visible = false
@@ -439,12 +569,30 @@ asteroidDistance = 600.0
 mesh = ExtResource("27_gamp7")
 skeleton = NodePath("")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="Asteroids/Asteroid1"]
+script = ExtResource("28_p16r8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Asteroids/Asteroid1/StaticBody3D"]
+shape = SubResource("SphereShape3D_jba1a")
+
 [node name="Asteroid2" type="MeshInstance3D" parent="Asteroids"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 mesh = SubResource("ArrayMesh_2fjta")
 skeleton = NodePath("")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="Asteroids/Asteroid2"]
+script = ExtResource("28_p16r8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Asteroids/Asteroid2/StaticBody3D"]
+shape = SubResource("SphereShape3D_jba1a")
+
 [node name="Asteroid3" type="MeshInstance3D" parent="Asteroids"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
 mesh = SubResource("ArrayMesh_d1t5a")
 skeleton = NodePath("")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Asteroids/Asteroid3"]
+script = ExtResource("28_p16r8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Asteroids/Asteroid3/StaticBody3D"]
+shape = SubResource("SphereShape3D_jba1a")
