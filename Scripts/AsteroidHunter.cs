@@ -3,46 +3,103 @@ using System;
 
 public partial class AsteroidHunter : Node3D
 {
-	private AsteroidSpawner asteroids;
+	public AsteroidSpawner asteroids;
 	private Vector3 targetPosition = Vector3.Zero;
-	[Export] private float speed = 60f;
+	private MeshInstance3D asteroid;
+	[Export] private float speed = 40f;
+	[Export] public BlackHoleNode blackHole;
 
-	private MeshInstance3D mesh;
+	public float materialAmount = 0f;
+
+	private Node3D mesh;
+	private int randomIndex;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		asteroids = GetNode<AsteroidSpawner>("../Asteroids");
-		//GD.Print(asteroids);
-		mesh = GetNode<MeshInstance3D>("MeshInstance3D");
+		if (Visible)
+		{
+			//asteroids = GetNode<AsteroidSpawner>("../Asteroids");
+			GD.Print(asteroids);
+			mesh = GetNode<Node3D>("Laser2");
+			pickRandomAsteroid();
+		}
+
 	}
 
 	public void pickRandomAsteroid()
 	{
-		int randomIndex = GD.RandRange(0, asteroids.allAsteroids.Count - 1);
-		targetPosition = asteroids.allAsteroids[randomIndex].Position;
+		randomIndex = GD.RandRange(0, asteroids.allAsteroids.Count - 1);
+
+		if (randomIndex > 0)
+		{
+			targetPosition = asteroids.allAsteroids[randomIndex].Position;
+			asteroid = asteroids.allAsteroids[randomIndex];
+		}
+
 		// GD.Print();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-
-		if (Position.DistanceTo(targetPosition) > 5f)
+		if (Visible)
 		{
 			float dTime = (float)delta;
-			Position += Position.DirectionTo(targetPosition) * dTime * speed;
-			mesh.LookAt(targetPosition);
-		}
-		else
-		{
+
+			if (materialAmount >= 25f)
+			{
+				if (Position.DistanceTo(blackHole.Position) > blackHole.blackHoleScale/2f + 5f)
+				{
+					Position += Position.DirectionTo(blackHole.Position) * dTime * speed;
+					mesh.LookAt(targetPosition);
+				}
+				else
+				{
+					blackHole.feed(materialAmount);
+					materialAmount = 0f;
+					pickRandomAsteroid();
+				}
+
+			}
+			else if(IsInstanceValid(asteroid))
+			{
+				if (asteroid.IsQueuedForDeletion())
+				{
+					pickRandomAsteroid();
+				}
+				
+				if (Position.DistanceTo(targetPosition) > 5f)
+				{
+					Position += Position.DirectionTo(targetPosition) * dTime * speed;
+					mesh.LookAt(targetPosition);
+				}
+				else
+				{
+					float addedAmount = dTime * 2f;
+					materialAmount += addedAmount;
+					asteroid.Scale = asteroid.Scale - new Vector3(addedAmount,addedAmount,addedAmount);
+
+					if (asteroid.Scale.X < 0.1f)
+					{
+						asteroids.allAsteroids.Remove(asteroid);
+						asteroid.QueueFree();
+						pickRandomAsteroid();
+					}
 			
+				}
+			}
 		}
+		
+		
+		
+		
+		
 
 		
-		if (Input.IsActionPressed("Take"))
-		{
-			pickRandomAsteroid();
-		}
+		// if (Input.IsActionPressed("Take"))
+		// {
+		// 	pickRandomAsteroid();
+		// }
 	}
 }

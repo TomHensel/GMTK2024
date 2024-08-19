@@ -9,6 +9,9 @@ public partial class UiManager : Control
 	
 	public Label planetDestroyerLabel;
 	public TextureRect planetDestroyerIcon;
+
+	public Label asteroidLabel;
+	public TextureRect asteroidIcon;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -21,5 +24,8 @@ public partial class UiManager : Control
 
 		planetDestroyerLabel = GetNode<Label>("PlanetDestroyerLabel");
 		planetDestroyerIcon = GetNode<TextureRect>("PlanetDestroyerIcon");
+		
+		asteroidLabel = GetNode<Label>("AsteroidLabel");
+		asteroidIcon = GetNode<TextureRect>("AsteroidIcon");
 	}
 }

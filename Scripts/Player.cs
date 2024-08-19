@@ -4,14 +4,15 @@ public partial class Player : CharacterBody3D
 {
 	// Called when the node enters the scene tree for the first time.
 
-	public float BlackHoleFoodAmount;
+	public float BlackHoleFoodAmount = 0;
 	public int planetDestoyerAmount = 0;
-	public int sunDestoyerAmount = 0;
+	public int asteroidHunterAmount = 0;
 
 	private bool planetDestroyerUnlocked = false;
+	private bool asteroidHunterUnlocked = false;
 
 	[Export] private PlanetDestroyer planetDestroyer;
-	
+	[Export] private AsteroidHunter asteroidHunter;
 
 	[Export] private Node3D sunSystem; 
 	
@@ -25,6 +26,8 @@ public partial class Player : CharacterBody3D
 	[Export] private float rotationSpeed = 5f;
 	[Export] private float steeringSpeed = 0.1f;
 	[Export] private float steeringAccelaration = 5f;
+
+	[Export] private AsteroidSpawner asteroidSpawner;
 
 	private RayCast3D interactRay;
 	
@@ -102,10 +105,15 @@ public partial class Player : CharacterBody3D
 
 		handleSunSystem();
 
-		if (blackHole.blackHoleScale >= 50f)
+		if (blackHole.blackHoleScale >= 25f)
 		{
-			planetDestroyerUnlocked = true;
+			asteroidHunterUnlocked = true;
+			if (blackHole.blackHoleScale >= 50f)
+			{
+				planetDestroyerUnlocked = true;
+			}
 		}
+
 	}
 
 	public void handleSunSystem()
@@ -154,6 +162,30 @@ public partial class Player : CharacterBody3D
 		{
 			uiManager.planetDestroyerIcon.Hide();
 			uiManager.planetDestroyerLabel.Hide();
+		}
+
+		if (asteroidHunterAmount > 0)
+		{
+			uiManager.asteroidIcon.Show();
+			uiManager.asteroidLabel.Show();
+			uiManager.asteroidLabel.Text = asteroidHunterAmount.ToString() + ", F To Deploy";
+		}
+		else
+		{
+			uiManager.asteroidIcon.Hide();
+			uiManager.asteroidLabel.Hide();
+		}
+
+		if (Input.IsActionJustPressed("Deploy") && asteroidHunterAmount > 0)
+		{
+			AsteroidHunter newAsteroidHunter = (AsteroidHunter) asteroidHunter.Duplicate();
+			newAsteroidHunter.Position = Position;
+			newAsteroidHunter.blackHole = blackHole;
+			newAsteroidHunter.Visible = true;
+			newAsteroidHunter.asteroids = asteroidSpawner;
+			//newAsteroidHunter.pickRandomAsteroid();
+			GetTree().Root.AddChild(newAsteroidHunter);
+			asteroidHunterAmount -= 1;
 		}
 	}
 
@@ -211,6 +243,22 @@ public partial class Player : CharacterBody3D
 					}
 
 					//planetDestoyerAmount++;
+				}else if (shopItem.itemType == 1)
+				{
+					if (asteroidHunterUnlocked)
+					{
+						uiManager.pressToActionLabel.Text = "E - 50 To Buy AsteroidHunter";
+						if (Input.IsActionJustPressed("Interact") && BlackHoleFoodAmount >= 50)
+						{
+							BlackHoleFoodAmount -= 50;
+							asteroidHunterAmount++;
+							changeFoodUi();
+						}
+					}
+					else
+					{
+						uiManager.pressToActionLabel.Text = "Give Black Hole 25 to Unlock AsteroidHunter";
+					}
 				}
 			}
 		}
