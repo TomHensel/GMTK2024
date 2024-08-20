@@ -12,10 +12,14 @@ public partial class UiManager : Control
 
 	public Label asteroidLabel;
 	public TextureRect asteroidIcon;
+
+	public Control pauseMenu;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		pauseMenu = GetNode<Control>("PauseMenu");
+		pauseMenu.Visible = false;
 		
 		pressToActionLabel = GetNode<Label>("PressToActionLabel");
 		crossHair = GetNode<TextureRect>("TextureRect");
@@ -28,4 +32,6 @@ public partial class UiManager : Control
 		asteroidLabel = GetNode<Label>("AsteroidLabel");
 		asteroidIcon = GetNode<TextureRect>("AsteroidIcon");
 	}
+
+
 }

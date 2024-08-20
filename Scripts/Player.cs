@@ -311,19 +311,20 @@ public partial class Player : CharacterBody3D
 			moveCamera((InputEventMouseMotion)@event);
 		}
 		
-		if (@event.IsActionPressed("Escape"))
-		{
-			
-			if (Input.MouseMode == Input.MouseModeEnum.Visible)
-			{
-				Input.MouseMode = Input.MouseModeEnum.Confined;
-			}
-			else
-			{
-				Input.MouseMode = Input.MouseModeEnum.Visible;
-			}
-			
-		}
+		// if (@event.IsActionPressed("Escape"))
+		// {
+		// 	
+		// 	if (Input.MouseMode == Input.MouseModeEnum.Visible)
+		// 	{
+		// 		
+		// 		Input.MouseMode = Input.MouseModeEnum.Confined;
+		// 	}
+		// 	else
+		// 	{
+		// 		Input.MouseMode = Input.MouseModeEnum.Visible;
+		// 	}
+		// 	
+		// }
 		
 	}
 	
